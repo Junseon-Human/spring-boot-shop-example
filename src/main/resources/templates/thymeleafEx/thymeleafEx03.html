@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns: xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    .hihi{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    div{
+    margin : 5px;
+    }
+</style>
+<body>
+<h1>상품 데이터 출력 예제</h1>
+<container class="hihi">
+    <th:block th:each="dto, status :  ${list}">
+        <div>
+            <div>
+                번호 : <span th:text="${status.count}"/>
+            </div>
+            <div>
+                상품명 : <span th:text="${dto.itemNm}"></span>
+            </div>
+            <div>
+                상품 상세설명 : <span th:text="${dto.itemDetail}"></span>
+            </div>
+            <div>
+                상품 가격 : <span th:text="${dto.price}"></span>
+            </div>
+            <div>
+                상품 등록일 : <span th:text="${dto.regTime}"></span>
+            </div>
+        </div>
+    </th:block>
+</container>
+<p th:text="${data}">Hello Thymeleaf!</p>
+</body>
+</html>
