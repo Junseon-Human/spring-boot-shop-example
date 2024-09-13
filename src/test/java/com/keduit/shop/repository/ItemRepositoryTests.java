@@ -3,6 +3,7 @@ package com.keduit.shop.repository;
 import com.keduit.shop.constant.ItemSellStatus;
 import com.keduit.shop.entity.Item;
 import com.keduit.shop.entity.QItem;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryFactory;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -10,6 +11,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -127,6 +132,50 @@ public class ItemRepositoryTests {
 
         for (Item item : itemList) {
             System.out.println(item);
+        }
+    }
+
+    @Test
+    @DisplayName("상품 Querydsl 조회 테스트 2 - QuerydslPredicateExecutor")
+    public void queryDslTest2() {
+
+//        this.createItemList();
+
+        //QItem 생성
+        QItem item = QItem.item;
+//  BooleanBuilder = 쿼리에 들어갈 조건을 만들어 주는 빌더
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        //들어갈 내용들 변수에 지정
+        String itemDetail = "테스트 상품 상세 설명";
+        int price = 10003;
+        String itemSellStat = "SELL";
+
+        //1번 쿼리
+        booleanBuilder.and(item.itemDetail.like("%" + "4" + "%"));
+        //gt == ~보다 크다
+        //2번 쿼리
+        booleanBuilder.and(item.price.gt(price));
+        System.out.println(ItemSellStatus.SELL);
+
+        //상품 판매 상태가 "SELL" 일 때만 booleanBuilder 에 판매 상태 조건을 동적으로 추가
+        //StringUtils-> thymeleaf = String을 강화하여 쓰는 객체이다
+        if (StringUtils.equals(itemSellStat, ItemSellStatus.SELL)) {
+            //3번 쿼리
+            booleanBuilder.and(item.itemSellStatus.eq(ItemSellStatus.SELL));
+        }
+// 5개씩 보도록 Pageable 생성
+        Pageable pageable = PageRequest.of(1, 5);
+//page 를 생성하고 booleanBuilder 의 쿼리문을 이용한 itemPage 생성
+        // -> 3개의 where를 모두 만족하는 쿼리문만
+        Page<Item> itemPageResult = itemRepository.findAll(booleanBuilder, pageable);
+        System.out.println("total element : " + itemPageResult.getTotalElements());
+        System.out.println("total pages : " + itemPageResult.getTotalPages());
+
+        // resultSet을 getContent()로 내용을 가져와 띄움
+        List<Item> resultItemList = itemPageResult.getContent();
+        for (Item i : resultItemList) {
+            System.out.println("상품 : " + i);
         }
     }
 
