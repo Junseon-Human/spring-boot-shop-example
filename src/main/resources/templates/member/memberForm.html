@@ -11,10 +11,11 @@
     </style>
 </th:block>
 <!-- 사용자 js 추가 -->
-<th:block layout:gragment="script">
+<th:block layout:fragment="script">
     <script th:inline="javascript">
         $(document).ready(function(){
-            const errorMessage = [[$(errorMessage)]];
+            const errorMessage = [[${errorMessage}]];
+            console.log("errorMes" + errorMessage);
             if (errorMessage != null){
                 alert(errorMessage)
             }
@@ -45,7 +46,7 @@
         </div>
         <div class="form-group">
             <label th:for="email">이메일주소</label>
-            <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="이메일을 입력해주세요">
+            <input type="text" class="form-control" id="email" th:field="*{email}" placeholder="이메일을 입력해주세요">
             <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="fieldError">Incorrect data</p>
         </div>
         <div class="form-group">

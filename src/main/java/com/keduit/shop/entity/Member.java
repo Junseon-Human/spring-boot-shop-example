@@ -40,7 +40,7 @@ public class Member {
 //      memberDTO 에서 가져온 비밀번호는 인코딩 필요함
         String password = passwordEncoder.encode(memberDTO.getPassword());
         member.setPassword(password);
-        member.setRole(Role.USER);
+        member.setRole(Role.ADMIN);
         return member;
     }
 }
