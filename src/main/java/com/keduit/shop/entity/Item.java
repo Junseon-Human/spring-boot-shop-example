@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-public class Item {
+public class Item extends BaseEntity {
     @Id     // pk 설정
     @Column(name="item_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,8 +34,9 @@ public class Item {
 
     @Enumerated(EnumType.STRING)        // enum이라 넣어줌
     private ItemSellStatus itemSellStatus; // 상품 판매상태
-
-    @CreationTimestamp
-    private LocalDateTime regTime;  // 등록시간
-    private LocalDateTime updateTime;      // 수정시간
+    
+//    BaseEntity를 extends 했기때문에 사용하지 않음
+//    @CreationTimestamp
+//    private LocalDateTime regTime;  // 등록시간
+//    private LocalDateTime updateTime;      // 수정시간
 }
