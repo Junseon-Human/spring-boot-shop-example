@@ -26,7 +26,7 @@ public class ThymeleafExController {
         dto.setItemNm("타임리프 상품1");
         dto.setItemDetail("타임리프 상품1 상세설명");
         dto.setPrice(20000);
-        dto.setRegTime(LocalDateTime.now());
+//        dto.setRegTime(LocalDateTime.now());
         model.addAttribute("itemDTO",dto);
         return "thymeleafEx/thymeleafEx02";
     }
@@ -40,7 +40,7 @@ public class ThymeleafExController {
             dto.setItemNm("테스트 상품" + i);
             dto.setItemDetail("테스트 상품 상세설명" + i);
             dto.setPrice(25000);
-            dto.setRegTime(LocalDateTime.now());
+//            dto.setRegTime(LocalDateTime.now());
 
             list.add(dto);
         }

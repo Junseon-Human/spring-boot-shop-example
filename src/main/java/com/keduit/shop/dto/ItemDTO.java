@@ -1,29 +1,53 @@
 package com.keduit.shop.dto;
 
 import com.keduit.shop.constant.ItemSellStatus;
+import com.keduit.shop.entity.Item;
+import com.keduit.shop.entity.ItemImg;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.ToString;
+import org.modelmapper.ModelMapper;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
+@ToString
 public class ItemDTO {
-    private long id;                // 상품코드
 
-    private String itemNm;          // 상품명
+    private Long id;
 
-    private int price;              // 상품가격
+    @NotBlank(message = "상품명은 필수 입력 입니다.")
+    private String itemNm;
 
-    private int stockNumber;        // 재고수량
+    @NotNull(message = "가격은 필수 입력입니다.")
+    private Integer price;
 
-    private String itemDetail;      // 상품 상세설명
+    @NotNull(message = "재고는 필수 입력입니다.")
+    private Integer stockNumber;
 
-    private ItemSellStatus sellStatus; // 상품 판매상태
+    @NotBlank(message = "상세설명은 필수 입력입니다.")
+    private String itemDetail;
 
-    private LocalDateTime regTime;  // 등록시간
+    private ItemSellStatus itemSellStatus;
 
-    private LocalDateTime updateTime;      // 수정시간
+    private List<ItemImgDTO> itemImgDTOList = new ArrayList<>();
+
+    private List<Long> itemImgIds = new ArrayList<>();
+
+    private static ModelMapper modelMapper = new ModelMapper();
+
+    public Item createItem() {
+        return modelMapper.map(this, Item.class);
+    }
+
+    public static ItemDTO of (Item item) {
+        return modelMapper.map(item, ItemDTO.class);
+    }
+
+
+
 }
