@@ -43,6 +43,7 @@
     <h1>상품 등록</h1>
     <!--    이미 업로드 시에는 enctype 을 넣음 -->
     <form role="form" method="post" th:object="${itemDTO}" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}">
         <div class="form-group">
             <select th:field="*{itemSellStatus}" class="custom-select">
                 <option value="SELL"> 판매중</option>
@@ -92,15 +93,17 @@
             </div>
         </div>
         <div th:if="${not #lists.isEmpty(itemDTO.itemImgDTOList)}">
-            <div class="form-group" th:each="num : ${#numbers.sequence(1, 5)}">
+            <div class="form-group" th:each="itemImgDTO, status: ${itemDTO.itemImgDTOList}">
                 <div class="custom-file img-div">
                     <input type="file" class="custom-file-input" name="itemImgFile">
                     <input type="hidden" name="itemImgIds" th:value="${itemImgDTO.id}">
-                    <label class="custom-file-label" th:text="${not #strings.isEmpty(itemImgDTO.oriImgName)} ?
-                    ${itemImgDTO.oriImeName} : '상품이미지' + ${num}"></label>
+                    <label class="custom-file-label"
+                           th:text="${not #strings.isEmpty(itemImgDTO.oriImgName)} ?
+                    ${itemImgDTO.oriImgName} : '상품이미지' + ${status.count}"></label>
                 </div>
             </div>
         </div>
+
 
         <div th:if="${#strings.isEmpty(itemDTO.id)}"
             style="text-align: center">
@@ -111,7 +114,7 @@
         </div>
         <div th:unless="${#strings.isEmpty(itemDTO.id)}"
              style="text-align: center">
-            <button th:formaction="@{'/admin/item/' + ${itemDTO.id}" type="submit"
+            <button th:formaction="@{'/admin/item/' + ${itemDTO.id}}" type="submit"
                     class="btn btn-danger">
                 수정
             </button>

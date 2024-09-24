@@ -39,11 +39,13 @@ public class ItemDTO {
     private List<Long> itemImgIds = new ArrayList<>();
 
     private static ModelMapper modelMapper = new ModelMapper();
-
+    
+//  DTO -> 엔티티
     public Item createItem() {
         return modelMapper.map(this, Item.class);
     }
 
+//  엔티티 -> DTO
     public static ItemDTO of (Item item) {
         return modelMapper.map(item, ItemDTO.class);
     }

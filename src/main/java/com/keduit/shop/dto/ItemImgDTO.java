@@ -24,7 +24,7 @@ public class ItemImgDTO {
     private static ModelMapper modelMapper = new ModelMapper();
 
     //model mapper를 사용하기 위해서는 entity 의 필드 이름과 DTO필드 이름을 똑같이 작성할것
-    private static ItemImgDTO of(ItemImg itemImg) {
+    public static ItemImgDTO of(ItemImg itemImg) {
         return modelMapper.map(itemImg, ItemImgDTO.class);
     }
 

@@ -1,6 +1,7 @@
 package com.keduit.shop.entity;
 
 import com.keduit.shop.constant.ItemSellStatus;
+import com.keduit.shop.dto.ItemDTO;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -34,7 +35,16 @@ public class Item extends BaseEntity {
 
     @Enumerated(EnumType.STRING)        // enum이라 넣어줌
     private ItemSellStatus itemSellStatus; // 상품 판매상태
-    
+
+    public void updateItem(ItemDTO itemDTO) {
+        this.itemNm = itemDTO.getItemNm();
+        this.price = itemDTO.getPrice();
+        this.stockNumber = itemDTO.getStockNumber();
+        this.itemDetail = itemDTO.getItemDetail();
+        this.itemSellStatus = itemDTO.getItemSellStatus();
+
+    }
+
 //    BaseEntity를 extends 했기때문에 사용하지 않음
 //    @CreationTimestamp
 //    private LocalDateTime regTime;  // 등록시간
