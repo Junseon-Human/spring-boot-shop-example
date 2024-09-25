@@ -2,6 +2,7 @@ package com.keduit.shop.entity;
 
 import com.keduit.shop.constant.ItemSellStatus;
 import com.keduit.shop.dto.ItemDTO;
+import com.keduit.shop.exception.OutOfStockException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -24,7 +25,7 @@ public class Item extends BaseEntity {
     private String itemNm;          // 상품명
 
     @Column(nullable = false)
-    private int price;              // 상품가격
+    private Integer price;              // 상품가격
 
     @Column(nullable = false)
     private int stockNumber;        // 재고수량
@@ -43,6 +44,16 @@ public class Item extends BaseEntity {
         this.itemDetail = itemDTO.getItemDetail();
         this.itemSellStatus = itemDTO.getItemSellStatus();
 
+    }
+
+    // 1. 변경 감지 : update가 작동
+    // 2. 주문 수량이 재고 수량을 넘지 않도록
+    public void removeStock(int stockNumber) {
+        int restStock = this.stockNumber - stockNumber;
+        if (restStock < 0) {
+            throw new OutOfStockException("상품의 재고가 부족합니다.(현재 재고수량 : " + this.stockNumber + ")");
+        }
+        this.stockNumber = restStock;
     }
 
 //    BaseEntity를 extends 했기때문에 사용하지 않음

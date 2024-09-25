@@ -3,6 +3,7 @@ package com.keduit.shop.service;
 import com.keduit.shop.dto.ItemDTO;
 import com.keduit.shop.dto.ItemImgDTO;
 import com.keduit.shop.dto.ItemSearchDTO;
+import com.keduit.shop.dto.MainItemDTO;
 import com.keduit.shop.entity.Item;
 import com.keduit.shop.entity.ItemImg;
 import com.keduit.shop.repository.ItemImgRepository;
@@ -31,7 +32,6 @@ public class ItemService {
         // 상품 등록
         Item item = itemDTO.createItem();
         itemRepository.save(item);
-
         // 이미지 등록
         for (int i=0; i < itemImgFileList.size(); i++) {
             ItemImg itemImg = new ItemImg();
@@ -83,6 +83,11 @@ public class ItemService {
     @Transactional(readOnly = true)
     public Page<Item> getAdminPage(ItemSearchDTO itemSearchDTO, Pageable pageable) {
         return itemRepository.getAdminItemPage(itemSearchDTO, pageable);
+    }
+
+    @Transactional
+    public Page<MainItemDTO> getMainItemPage(ItemSearchDTO itemSearchDTO, Pageable pageable) {
+        return itemRepository.getMainItemPage(itemSearchDTO, pageable);
     }
 
 

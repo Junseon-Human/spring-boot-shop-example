@@ -55,7 +55,7 @@ public class ItemController {
     }
 
     @GetMapping("/admin/item/{itemId}")
-    public String itemDtl(@PathVariable("itemId") Long itemId, Model model) {
+    public String itemDetail(@PathVariable("itemId") Long itemId, Model model) {
         try {
         ItemDTO itemDTO = itemService.getItemDtl(itemId);
         model.addAttribute("itemDTO", itemDTO);
@@ -100,6 +100,13 @@ public class ItemController {
         model.addAttribute("itemSearchDTO", itemSearchDTO);
         model.addAttribute("maxPage", 5);
         return "item/itemMng";
+    }
+
+    @GetMapping("/item/{itemId}")
+    public String itemDtl(@PathVariable("itemId") Long itemId, Model model) {
+        ItemDTO itemDTO = itemService.getItemDtl(itemId);
+        model.addAttribute("item", itemDTO);
+        return "item/itemDtl";
     }
 
 }

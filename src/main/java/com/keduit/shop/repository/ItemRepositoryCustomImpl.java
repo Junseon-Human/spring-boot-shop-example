@@ -2,8 +2,11 @@ package com.keduit.shop.repository;
 
 import com.keduit.shop.constant.ItemSellStatus;
 import com.keduit.shop.dto.ItemSearchDTO;
+import com.keduit.shop.dto.MainItemDTO;
+import com.keduit.shop.dto.QMainItemDTO;
 import com.keduit.shop.entity.Item;
 import com.keduit.shop.entity.QItem;
+import com.keduit.shop.entity.QItemImg;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -53,6 +56,11 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         }
         return null;
     }
+    
+    // main화면에서 상품명 검색
+    private BooleanExpression itemNmLike(String searchQuery) {
+        return StringUtils.isEmpty(searchQuery) ? null : QItem.item.itemNm.like("%" + searchQuery + "%");
+    }
 
     @Override
     public Page<Item> getAdminItemPage(ItemSearchDTO itemSearchDTO, Pageable pageable) {
@@ -75,6 +83,40 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         searchByLike(itemSearchDTO.getSearchBy(), itemSearchDTO.getSearchQuery()))
                 .fetchOne(); // fetchOne : 하나의 결과를 가져옴
 
+        return new PageImpl<>(result, pageable, total);
+    }
+
+    @Override
+    public Page<MainItemDTO> getMainItemPage(ItemSearchDTO itemSearchDTO, Pageable pageable) {
+        QItem item = QItem.item;
+        QItemImg itemImg = QItemImg.itemImg;
+
+        List<MainItemDTO> result = queryFactory
+                .select(
+                        //@QueryProjection 덕분에 쓸 수 있게 되었음
+                        new QMainItemDTO(item.id,
+                                item.itemNm,
+                                item.itemDetail,
+                                item.price,
+                                itemImg.imgUrl
+                               )
+                )
+                .from(itemImg)
+                .join(itemImg.item, item)
+                .where(itemImg.repImgYn.eq("Y"))
+                .where(itemNmLike(itemSearchDTO.getSearchQuery()))
+                .orderBy(item.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = queryFactory
+                .select(Wildcard.count)
+                .from(itemImg)
+                .join(itemImg.item, item)
+                .where(itemImg.repImgYn.eq("Y"))
+                .where(itemNmLike(itemSearchDTO.getSearchQuery()))
+                .fetchOne();
         return new PageImpl<>(result, pageable, total);
     }
 }
