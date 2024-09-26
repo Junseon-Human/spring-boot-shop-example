@@ -62,6 +62,15 @@ public class Order extends BaseEntity {
         return totalPrice;
     }
 
+    // 주문 취소시 주문 상태를 CANCEL로 변경
+    public void cancelOrder() {
+        this.orderStatus = OrderStatus.CANCEL;
+
+        for(OrderItem orderItem : orderItems) {
+            orderItem.cancel();
+        }
+    }
+
 //    BaseEntity를 extends 했기때문에 사용하지 않음
 //    private LocalDateTime regTime;
 //    private LocalDateTime updateTime;
