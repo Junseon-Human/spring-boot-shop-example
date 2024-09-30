@@ -42,9 +42,9 @@
         function getOrderTotalPrice() {
             let orderTotalPrice = 0;
             $("input[name='cartChkBox']:checked").each(function() {
-                const carItemId = $(this).val();
-                const price = $("#price_" + carItemId).attr("data-price");
-                const count = $("#count_" + carItemId).val();
+                const cartItemId = $(this).val();
+                const price = $("#price_" + cartItemId).attr("data-price");
+                const count = $("#count_" + cartItemId).val();
                 orderTotalPrice += price * count;
             });
             $("#orderTotalPrice").html(orderTotalPrice + "원");
@@ -111,7 +111,7 @@
                         alert("로그인 후 이용해주세요.");
                         location.href = "/members/login";
                     } else {
-                        alert(xhr.responseJSON.messages);
+                        alert(xhr.responseText);
                     }
                 }
             })
@@ -137,7 +137,7 @@
             // 체크된 장바구니의 상품 아이디를 전달하기 위해서
             // dataList 배열에 장바구니 상품아이디를 객체로 만들어 저장함
             $("input[name='cartChkBox']:checked").each(function() {
-                const carItemId = $(this).val();
+                const cartItemId = $(this).val();
                 const data = new Object();
                 data["cartItemId"] = cartItemId;
                 dataList.push(data);
@@ -166,7 +166,7 @@
                         alert("로그인 후 이용하세요")
                         location.href = "/members/login";
                     } else  {
-                        alert(xhr.responseJSON.messages);
+                        alert(xhr.responseText);
                     }
                 }
             })

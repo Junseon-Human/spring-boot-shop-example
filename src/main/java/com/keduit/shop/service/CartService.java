@@ -2,6 +2,8 @@ package com.keduit.shop.service;
 
 import com.keduit.shop.dto.CartDetailDTO;
 import com.keduit.shop.dto.CartItemDTO;
+import com.keduit.shop.dto.CartOrderDTO;
+import com.keduit.shop.dto.OrderDTO;
 import com.keduit.shop.entity.Cart;
 import com.keduit.shop.entity.CartItem;
 import com.keduit.shop.entity.Item;
@@ -28,6 +30,7 @@ public class CartService {
     private final MemberRepository memberRepository;
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
+    private final OrderService orderService;
 
     public Long addCart(CartItemDTO cartItemDTO, String email) {
         Item item = itemRepository.findById(cartItemDTO.getItemId()).orElseThrow(EntityNotFoundException::new);
@@ -89,5 +92,28 @@ public class CartService {
     public void deleteCartItem(Long cartItemId) {
         CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow(EntityNotFoundException::new);
         cartItemRepository.delete(cartItem);
+    }
+    
+    //장바구니에 있는 상품을 주문시에 주문상품은 주문이력으로 넘어가고 장바구니에서는 삭제
+    public Long orderCartItem(List<CartOrderDTO> cartOrderDTOList, String email) {
+        List<OrderDTO> orderDTOList = new ArrayList<>();
+        for (CartOrderDTO cartOrderDTO : cartOrderDTOList) {
+            CartItem cartItem = cartItemRepository.findById(cartOrderDTO.getCartItemId()).orElseThrow(EntityNotFoundException::new);
+            OrderDTO orderDTO = new OrderDTO();
+            orderDTO.setItemId(cartItem.getItem().getId());
+            orderDTO.setCount(cartItem.getCount());
+            orderDTOList.add(orderDTO);
+        }
+        
+        // 장바구니에 담은 상품을 주문하도록 주문 로직을 가지고있는 orderService.orders를 호출
+        Long orderId = orderService.orders(orderDTOList, email);
+
+        // 주문한 상품은 장바구니 에서 제거
+        for (CartOrderDTO cartOrderDTO : cartOrderDTOList) {
+            CartItem cartItem = cartItemRepository.findById(cartOrderDTO.getCartItemId()).orElseThrow(EntityNotFoundException::new);
+            cartItemRepository.delete(cartItem);
+        }
+
+        return orderId;
     }
 }
